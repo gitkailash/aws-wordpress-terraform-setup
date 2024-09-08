@@ -31,7 +31,7 @@ variable "instance_type" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instances"
   type        = string
-  default     = "ami-066784287e358dad1" # Amazon Linux 2 AMI (example)
+  default     = "ami-066784287e358dad1" # Amazon Linux 2 AMI
 }
 
 variable "key_name" {
@@ -42,22 +42,22 @@ variable "key_name" {
 
 variable "common_ingress_rule" {
   type = list(object({
-    from_port = number
-    to_port = number
-    protocol = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
     cidr_blocks = list(string)
   }))
 
-  default = [ {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+  default = [{
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  },
-  {
-    from_port = 22
-    to_port = 22
-    protocol = "ssh"
-    cidr_blocks = [ "0.0.0.0/0" ]
-  } ]
+    },
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+  }]
 }
