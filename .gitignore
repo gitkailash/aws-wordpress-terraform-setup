@@ -1,0 +1,49 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+*.tfplan
+*.tfplan.*
+*.terraform.lock.hcl
+
+# Ansible files
+*.retry
+
+# Private Key Files
+*.pem
+keys/
+
+# AWS CLI configuration
+.aws/
+
+# System files
+.DS_Store
+*.swp
+*.swo
+
+# Log files
+*.log
+
+# Backup files
+*.bak
+*.tmp
+
+# Python and other temporary files
+*.pyc
+*.pyo
+
+# IDE and editor folders
+.vscode/
+.idea/
+
+# Node modules
+node_modules/
+
+# NPM logs
+npm-debug.log
+
+# Environment variables
+.env
+.env.*
