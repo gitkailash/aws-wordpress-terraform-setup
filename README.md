@@ -4,7 +4,7 @@ This guide will walk you through setting up multiple environments (`dev`, `qa`, 
 
 ## Architecture Diagram
 
-<img src="https://github.com/gitkailash/AWS-WordPress-Deployment-Cost-Effective-Web-Infrastructure/blob/main/Diagram.jpg" alt="Architecture Diagram"/>
+<img src="https://github.com/gitkailash/aws-wordpress-terraform-setup/blob/master/Terraform-multi-env-deployment.jpg" alt="Architecture Diagram"/>
 
 ---
 
