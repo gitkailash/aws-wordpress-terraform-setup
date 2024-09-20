@@ -1,10 +1,33 @@
+terraform {
+  cloud {
+
+    organization = "learning-terraform-aws-2024"
+
+  }
+}
+
+locals {
+  region = terraform.workspace == "prod" ? "us-east-1" : terraform.workspace == "qa" ? "us-east-2" : "us-east-1" # Default to dev environment
+
+  vpc_cidr = terraform.workspace == "prod" ? "10.0.0.0/20" : terraform.workspace == "qa" ? "10.0.1.0/20" : "10.0.0.0/20" # Default to dev
+
+  public_subnet_cidr_1 = terraform.workspace == "prod" ? "10.0.0.0/26" : terraform.workspace == "qa" ? "10.0.1.0/26" : "10.0.0.0/26" # Default to dev
+
+  public_subnet_cidr_2 = terraform.workspace == "prod" ? "10.0.0.64/26" : terraform.workspace == "qa" ? "10.0.1.64/26" : "10.0.0.64/26" # Default to dev
+
+  availability_zone_1 = terraform.workspace == "prod" ? "us-east-1a" : terraform.workspace == "qa" ? "us-east-2a" : "us-east-1a" # Default to dev
+
+  availability_zone_2 = terraform.workspace == "prod" ? "us-east-1b" : terraform.workspace == "qa" ? "us-east-2b" : "us-east-1b" # Default to dev
+}
+
+
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 # Create VPC
 resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
+  cidr_block = local.vpc_cidr
 }
 
 # Create Internet Gateway
@@ -15,16 +38,16 @@ resource "aws_internet_gateway" "igw" {
 # Create Public Subnets
 resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_cidr_1
+  cidr_block              = local.public_subnet_cidr_1
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1a"
+  availability_zone       = local.availability_zone_1
 }
 
 resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_cidr_2
+  cidr_block              = local.public_subnet_cidr_2
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1b"
+  availability_zone       = local.availability_zone_2
 }
 
 # Create Route Table

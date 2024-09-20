@@ -26,6 +26,11 @@ variable "instance_type" {
   description = "EC2 instance type"
   type        = string
   default     = "t2.micro"
+
+  validation {
+    condition     = contains(["t2.micro"], var.instance_type)
+    error_message = "Invalid instance type. Allowed types is t2.micro Only."
+  }
 }
 
 variable "ami_id" {
@@ -71,8 +76,8 @@ variable "resource_tags" {
   }
 
   validation {
-    condition     = length(var.resource_tags["project"]) <= 16 && length(regexall("[^a-zA-Z0-9-]", var.resource_tags["project"])) == 0
-    error_message = "The project tag must be no more than 16 characters, and only contain letters, numbers, and hyphens."
+    condition     = length(var.resource_tags["project"]) <= 26 && length(regexall("[^a-zA-Z0-9-]", var.resource_tags["project"])) == 0
+    error_message = "The project tag must be no more than 26 characters, and only contain letters, numbers, and hyphens."
   }
   validation {
     condition     = length(var.resource_tags["environment"]) <= 8 && length(regexall("[^a-zA-Z0-9-]", var.resource_tags["environment"])) == 0
