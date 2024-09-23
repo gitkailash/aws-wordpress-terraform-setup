@@ -23,13 +23,21 @@ pipeline {
                     echo "Using Terraform Cloud workspace: ${workspace}"
 
                     withCredentials([string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TERRAFORM_TOKEN')]) {
-                        sh 'export TF_TOKEN=$TERRAFORM_TOKEN'
+                        if (isUnix()) {
+                            sh 'export TF_TOKEN=$TERRAFORM_TOKEN'
+                        } else {
+                            bat "set TF_TOKEN=%TERRAFORM_TOKEN%"
+                        }
                         echo 'Terraform Cloud token set.'
                     }
 
                     echo 'Initializing Terraform...'
                     try {
-                        sh "terraform init"
+                        if (isUnix()) {
+                            sh "terraform init"
+                        } else {
+                            bat "terraform init"
+                        }
                         echo 'Terraform initialization completed.'
                     } catch (Exception e) {
                         error 'Terraform initialization failed. Please check the logs for details.'
@@ -46,14 +54,22 @@ pipeline {
                     for (env in environments) {
                         echo "Switching to Terraform workspace: ${env}"
                         try {
-                            sh "terraform workspace select ${env} || terraform workspace new ${env}"
+                            if (isUnix()) {
+                                sh "terraform workspace select ${env} || terraform workspace new ${env}"
+                            } else {
+                                bat "terraform workspace select ${env} || terraform workspace new ${env}"
+                            }
                         } catch (Exception e) {
                             error "Failed to switch or create workspace: ${env}. Please check the logs."
                         }
 
                         echo 'Validating Terraform configuration...'
                         try {
-                            sh "terraform validate"
+                            if (isUnix()) {
+                                sh "terraform validate"
+                            } else {
+                                bat "terraform validate"
+                            }
                             echo 'Terraform validation successful.'
                         } catch (Exception e) {
                             error 'Terraform validation failed. Please check the configuration.'
@@ -61,7 +77,11 @@ pipeline {
 
                         echo 'Creating Terraform execution plan...'
                         try {
-                            sh "terraform plan -out=tfplan"
+                            if (isUnix()) {
+                                sh "terraform plan -out=tfplan"
+                            } else {
+                                bat "terraform plan -out=tfplan"
+                            }
                             echo 'Terraform plan created successfully.'
                         } catch (Exception e) {
                             error 'Terraform plan creation failed. Please check the logs.'
@@ -70,12 +90,18 @@ pipeline {
                         echo "Awaiting approval for deployment to the ${env} environment..."
                         input message: "Approve deployment to ${env} environment?", ok: "Deploy"
                         echo "Deploying to the ${env} environment..."
-                        try {
-                            sh "terraform apply -auto-approve tfplan"
-                            echo "Deployment to the ${env} environment completed successfully."
-                        } catch (Exception e) {
-                            error "Deployment to ${env} environment failed. Please check the logs."
+
+                        // Execute the apply command based on OS type
+                        def command = "terraform apply -auto-approve tfplan"
+                        if (isUnix()) {
+                            echo "Running on Linux: ${command}"
+                            sh "${command}"
+                        } else {
+                            echo "Running on Windows: ${command}"
+                            bat "${command}"
                         }
+
+                        echo "Deployment to the ${env} environment completed successfully."
                     }
                 }
             }

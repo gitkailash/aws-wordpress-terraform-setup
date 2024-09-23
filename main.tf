@@ -2,6 +2,9 @@ terraform {
   cloud {
 
     organization = "learning-terraform-aws-2024"
+    workspaces {
+      name = terraform.workspace
+    }
 
   }
 }
