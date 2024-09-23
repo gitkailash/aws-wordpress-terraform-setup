@@ -22,12 +22,9 @@ pipeline {
                     def workspace = env.WORKSPACE
                     echo "Using Terraform Cloud workspace: ${workspace}"
 
-                    echo 'Logging into Terraform Cloud...'
-                    try {
-                        sh "terraform login"
-                        echo 'Terraform login successful.'
-                    } catch (Exception e) {
-                        error 'Terraform login failed. Please check your credentials.'
+                    withCredentials([string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TERRAFORM_TOKEN')]) {
+                        sh 'export TF_TOKEN=$TERRAFORM_TOKEN'
+                        echo 'Terraform Cloud token set.'
                     }
 
                     echo 'Initializing Terraform...'
