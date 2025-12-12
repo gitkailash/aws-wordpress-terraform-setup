@@ -180,4 +180,3 @@ And once the infrastructure is all gone, feel free to manually delete those Terr
 ## Conclusion
 
 By following this guide, you've successfully deployed and managed AWS resources across multiple environments using Terraform Cloud. You’ve also learned how to handle workspaces, manage AWS credentials, and automate infrastructure provisioning with Terraform.
-```
